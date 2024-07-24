@@ -4,6 +4,7 @@ from DQMServices.Core.DQMEDHarvester import DQMEDHarvester
 
 from DQMOffline.RecoB.bTagMiniDQMDeepFlavour import *
 from DQMOffline.RecoB.bTagMiniDQMDeepCSV import *
+from DQMOffline.RecoB.bTagMiniDQMUnifiedParticleTransformer import *
 
 from PhysicsTools.PatAlgos.producersLayer1.jetProducer_cff import patJets
 
@@ -89,6 +90,12 @@ addSequences(bTagMiniDQMSource,
              globalPSet=bTagMiniDQMGlobal,
              label='bTagDeepCSVDQM')
 
+addSequences(bTagMiniDQMSource,
+             bTagMiniDQMHarvesting,
+             discriminators=UnifiedParticleTransformerDiscriminators,
+             regions=Etaregions,
+             globalPSet=bTagMiniDQMGlobal,
+             label='bTagUParTDQM')
 
 
 # Validation addSequences
@@ -114,6 +121,14 @@ addSequences(bTagMiniValidationSource,
              regions={'Global': Etaregions['Global']}, # only for global Eta range
              globalPSet=bTagMiniValidationGlobal,
              label='bTagDeepCSVValidation')
+
+addSequences(bTagMiniValidationSource,
+             bTagMiniValidationHarvesting,
+             discriminators=UnifiedParticleTransformerDiscriminators,
+             regions={'Global': Etaregions['Global']}, # only for global Eta range
+             globalPSet=bTagMiniValidationGlobal,
+             label='bTagUParTValidation')
+
 
 
 
