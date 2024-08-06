@@ -28,7 +28,7 @@ bTagSVDQM = DQMEDAnalyzer('MiniAODSVAnalyzer',
 
 
 bTagMiniDQMGlobal = cms.PSet(
-    JetTag = cms.InputTag('slimmedJets'),
+    JetTag = cms.InputTag('slimmedJetsPuppi'),
     MClevel = cms.int32(0),
     differentialPlots = cms.bool(True),
 
