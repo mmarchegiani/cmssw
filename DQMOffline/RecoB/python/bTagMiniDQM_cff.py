@@ -4,7 +4,7 @@ from DQMServices.Core.DQMEDHarvester import DQMEDHarvester
 
 from DQMOffline.RecoB.bTagMiniDQMDeepFlavour import *
 from DQMOffline.RecoB.bTagMiniDQMDeepCSV import *
-
+from DQMOffline.RecoB.bTagMiniDQMParticleNet import *
 from PhysicsTools.PatAlgos.producersLayer1.jetProducer_cff import patJets
 
 
@@ -27,7 +27,7 @@ bTagSVDQM = DQMEDAnalyzer('MiniAODSVAnalyzer',
 
 
 bTagMiniDQMGlobal = cms.PSet(
-    JetTag = cms.InputTag('slimmedJets'),
+    JetTag = cms.InputTag('slimmedJetsPuppi'),
     MClevel = cms.int32(0),
     differentialPlots = cms.bool(True),
 
@@ -57,8 +57,6 @@ Etaregions = {
         etaMax = cms.double(2.5),
     ),
 }
-
-
 def addSequences(Analyzer, Harvester, discriminators, regions, globalPSet, label='bTag'):
     for discr in discriminators.keys():
         for region in regions.keys():
@@ -89,7 +87,12 @@ addSequences(bTagMiniDQMSource,
              globalPSet=bTagMiniDQMGlobal,
              label='bTagDeepCSVDQM')
 
-
+addSequences(bTagMiniDQMSource,
+             bTagMiniDQMHarvesting,
+             discriminators=ParticleNetDiscriminators,
+             regions=Etaregions,
+             globalPSet=bTagMiniDQMGlobal,
+             label='bTagParticleNetDQM')
 
 # Validation addSequences
 
@@ -115,11 +118,17 @@ addSequences(bTagMiniValidationSource,
              globalPSet=bTagMiniValidationGlobal,
              label='bTagDeepCSVValidation')
 
-
+addSequences(bTagMiniValidationSource,
+             bTagMiniValidationHarvesting,
+             discriminators=ParticleNetDiscriminators,
+             regions={'Global': Etaregions['Global']}, # only for global Eta range
+             globalPSet=bTagMiniValidationGlobal,
+             label='bTagParticleNetValidation')
 
 from Configuration.ProcessModifiers.pp_on_AA_cff import pp_on_AA
 from Configuration.ProcessModifiers.miniAOD_skip_trackExtras_cff import miniAOD_skip_trackExtras
+from Configuration.Eras.Modifier_run2_miniAOD_94XFall17_cff import run2_miniAOD_94XFall17
 
-_mAOD = (pp_on_AA | miniAOD_skip_trackExtras)
+_mAOD = (pp_on_AA | miniAOD_skip_trackExtras | run2_miniAOD_94XFall17)
 _mAOD.toReplaceWith(bTagMiniDQMSource, bTagMiniDQMSource.copyAndExclude([bTagSVDQM, patJetsSVInfoTask]))
 _mAOD.toReplaceWith(bTagMiniValidationSource, bTagMiniValidationSource.copyAndExclude([bTagSVDQM, patJetsSVInfoTask]))
