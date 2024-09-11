@@ -4,11 +4,10 @@ from DQMOffline.RecoB.bTagGenericAnalysis_cff import bTagGenericAnalysisBlock
 from DQMOffline.RecoB.cTagGenericAnalysis_cff import cTagGenericAnalysisBlock
 
 
-# need to be replaced...couldn't find
 ParticleTransformerWP = {
-    'BvsAll': 0.0490, # loose
-    'CvsL':   0.099,  # medium
-    'CvsB':   0.325,  # medium
+    'BvsAll': 0.09, # loose
+    'CvsL':   0.117,  # medium
+    'CvsB':   0.128,  # medium
 }
 
 ParticleTransformerDiscriminators = {

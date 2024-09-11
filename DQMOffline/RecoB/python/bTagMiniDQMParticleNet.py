@@ -4,11 +4,10 @@ from DQMOffline.RecoB.bTagGenericAnalysis_cff import bTagGenericAnalysisBlock
 from DQMOffline.RecoB.cTagGenericAnalysis_cff import cTagGenericAnalysisBlock
 
 
-# need to be replaced...couldn't find
 ParticleNetWP = {
-    'BvsAll': 0.0358, # loose
-    'CvsL':   0.160,  # OLD
-    'CvsB':   0.304,  # OLD
+    'BvsAll': 0.05, # loose
+    'CvsL':   0.160, # medium
+    'CvsB':   0.304,  # medium
 }
 
 ParticleNetDiscriminators = {

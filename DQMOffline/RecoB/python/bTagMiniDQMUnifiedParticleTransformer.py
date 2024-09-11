@@ -4,11 +4,11 @@ from DQMOffline.RecoB.bTagGenericAnalysis_cff import bTagGenericAnalysisBlock
 from DQMOffline.RecoB.cTagGenericAnalysis_cff import cTagGenericAnalysisBlock
 
 
-# need to be replaced...couldn't find
+# The working point values need to be updated
 UnifiedParticleTransformerWP = {
-    'BvsAll': 0.001,#0.0490, # loose
-    'CvsL':   0.002,#0.099,  # medium
-    'CvsB':   0.003,#0.325,  # medium
+    'BvsAll': 0.09, # PLACEHOLDER
+    'CvsL':   0.117,  # PLACEHOLDER
+    'CvsB':   0.128,  # PLACEHOLDER
 }
 
 UnifiedParticleTransformerDiscriminators = {
