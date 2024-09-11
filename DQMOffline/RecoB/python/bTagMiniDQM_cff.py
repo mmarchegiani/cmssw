@@ -4,6 +4,8 @@ from DQMServices.Core.DQMEDHarvester import DQMEDHarvester
 
 from DQMOffline.RecoB.bTagMiniDQMDeepFlavour import *
 from DQMOffline.RecoB.bTagMiniDQMDeepCSV import *
+from DQMOffline.RecoB.bTagMiniDQMParticleTransformer import *
+from DQMOffline.RecoB.bTagMiniDQMUnifiedParticleTransformer import *
 from DQMOffline.RecoB.bTagMiniDQMParticleNet import *
 from PhysicsTools.PatAlgos.producersLayer1.jetProducer_cff import patJets
 
@@ -89,6 +91,20 @@ addSequences(bTagMiniDQMSource,
 
 addSequences(bTagMiniDQMSource,
              bTagMiniDQMHarvesting,
+             discriminators=ParticleTransformerDiscriminators,
+             regions=Etaregions,
+             globalPSet=bTagMiniDQMGlobal,
+             label='bTagParticleTransformerDQM')
+
+addSequences(bTagMiniDQMSource,
+             bTagMiniDQMHarvesting,
+             discriminators=UnifiedParticleTransformerDiscriminators,
+             regions=Etaregions,
+             globalPSet=bTagMiniDQMGlobal,
+             label='bTagUnifiedParticleTransformerDQM')
+
+addSequences(bTagMiniDQMSource,
+             bTagMiniDQMHarvesting,
              discriminators=ParticleNetDiscriminators,
              regions=Etaregions,
              globalPSet=bTagMiniDQMGlobal,
@@ -117,6 +133,20 @@ addSequences(bTagMiniValidationSource,
              regions={'Global': Etaregions['Global']}, # only for global Eta range
              globalPSet=bTagMiniValidationGlobal,
              label='bTagDeepCSVValidation')
+
+addSequences(bTagMiniValidationSource,
+             bTagMiniValidationHarvesting,
+             discriminators=ParticleTransformerDiscriminators,
+             regions={'Global': Etaregions['Global']}, # only for global Eta range
+             globalPSet=bTagMiniValidationGlobal,
+             label='bTagParticleTransformerValidation')
+
+addSequences(bTagMiniValidationSource,
+             bTagMiniValidationHarvesting,
+             discriminators=UnifiedParticleTransformerDiscriminators,
+             regions={'Global': Etaregions['Global']}, # only for global Eta range
+             globalPSet=bTagMiniValidationGlobal,
+             label='bTagUnifiedParticleTransformerValidation')
 
 addSequences(bTagMiniValidationSource,
              bTagMiniValidationHarvesting,
