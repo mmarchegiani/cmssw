@@ -7,6 +7,7 @@ from DPGAnalysis.HGCalNanoAOD.hgcSimHits_cff import *
 from DPGAnalysis.HGCalNanoAOD.hgcSimTracks_cff import *
 from DPGAnalysis.HGCalNanoAOD.hgcRecHits_cff import *
 from DPGAnalysis.HGCalNanoAOD.hgcRecHitSimAssociations_cff import *
+from DPGAnalysis.HGCalNanoAOD.hgcTopoClusters_cff import *
 from DPGAnalysis.CaloNanoAOD.simClusters_cff import *
 from DPGAnalysis.CaloNanoAOD.mergedSimClusters_cff import *
 from DPGAnalysis.CaloNanoAOD.caloParticles_cff import *
@@ -105,3 +106,9 @@ def customizeMergedSimClusters(process):
     #process.nanoHGCMLSequence.insert(-1, caloParticleMergedTables)
     process.nanoHGCMLSequence.insert(-1, caloParticleTables)
     return process
+
+def customizeTopoClusters(process):
+    """Add topological clustering to the nanoHGCML sequence"""
+    process.nanoHGCMLSequence += hgcTopoClusterSequence
+    return process
+
