@@ -78,4 +78,8 @@
   <class name="HGCalSoAClustersHostCollection"/>
   <class name="edm::Wrapper<HGCalSoAClustersHostCollection>" splitLevel="0"/>
 
+  <class name="reco::HGCalTopoCluster"/>
+  <class name="std::vector<reco::HGCalTopoCluster>"/>
+  <class name="edm::Wrapper<std::vector<reco::HGCalTopoCluster>>"/>
+
 </lcgdict>

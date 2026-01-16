@@ -4,8 +4,15 @@
 <use name="FWCore/Utilities"/>
 <use name="Geometry/HGCalGeometry"/>
 <use name="Geometry/CaloGeometry"/>
+<use name="Geometry/HGCalCommonData"/>
+<use name="Geometry/Records"/>
 <use name="DataFormats/Candidate"/>
 <use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/CaloRecHit"/>
+<use name="DataFormats/HGCRecHit"/>
+<use name="DataFormats/ForwardDetId"/>
+<use name="DataFormats/Math"/>
 <use name="PhysicsTools/PatAlgos"/>
 <use name="DataFormats/NanoAOD"/>
 <use name="SimDataFormats/CaloAnalysis"/>
