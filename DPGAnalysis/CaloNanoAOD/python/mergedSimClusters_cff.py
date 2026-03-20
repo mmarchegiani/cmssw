@@ -5,8 +5,7 @@ from DPGAnalysis.HGCalNanoAOD.hgcRecHits_cff import *
 
 
 closeBySimClusters = cms.EDProducer("CPtoSimClusters",
-                                    caloParticles = cms.InputTag("mix:MergedCaloTruth"),
-                                    simVertices = cms.InputTag("g4SimHits")
+                                    caloParticles = cms.InputTag("mix:MergedCaloTruth")
                                     )
 
 hgcSimTruth = cms.EDProducer("SimClusterMerger",

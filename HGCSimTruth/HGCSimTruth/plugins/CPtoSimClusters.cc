@@ -23,7 +23,6 @@
 #include "SimDataFormats/CaloAnalysis/interface/CaloParticleFwd.h"
 #include "SimDataFormats/CaloAnalysis/interface/SimClusterFwd.h"
 #include "SimDataFormats/CaloAnalysis/interface/SimCluster.h"
-#include "SimDataFormats/Vertex/interface/SimVertex.h"
 
 
 class CPtoSimClusters : public edm::stream::EDProducer<> {
@@ -36,13 +35,11 @@ class CPtoSimClusters : public edm::stream::EDProducer<> {
         void produce(edm::Event& iEvent, const edm::EventSetup& iSetup) override;
 
         edm::EDGetTokenT<CaloParticleCollection> cpCollectionToken_;
-        edm::EDGetTokenT<std::vector<SimVertex> > svCollectionToken_;
 
     };
 
 CPtoSimClusters::CPtoSimClusters(const edm::ParameterSet &pset) :
-              cpCollectionToken_(consumes<CaloParticleCollection>(pset.getParameter<edm::InputTag>("caloParticles"))),
-              svCollectionToken_(consumes<std::vector<SimVertex> >(pset.getParameter<edm::InputTag>("simVertices")))
+              cpCollectionToken_(consumes<CaloParticleCollection>(pset.getParameter<edm::InputTag>("caloParticles")))
 {
     produces<SimClusterCollection>();
 }
@@ -52,9 +49,6 @@ void CPtoSimClusters::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     edm::Handle<CaloParticleCollection> cpCollection;
     iEvent.getByToken(cpCollectionToken_, cpCollection);
-
-    edm::Handle<std::vector<SimVertex> > svCollection;
-    iEvent.getByToken(svCollectionToken_, svCollection);
 
     auto output = std::make_unique<SimClusterCollection>();
 
@@ -72,11 +66,15 @@ void CPtoSimClusters::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
 
         cpsc.setImpactMomentum(cp.p4());
-        auto vertex = svCollection->at(cp.g4Tracks().at(0).vertIndex());
-        cpsc.setImpactPoint(math::XYZTLorentzVectorF(vertex.position()));
-        cpsc.setPdgId(cp.pdgId());//done
-        //cp.
-        //cp.
+        
+        // Use vertex position directly from SimTrack to avoid index lookup issues with pileup
+        if (!cp.g4Tracks().empty()) {
+            auto vertex_pos = cp.g4Tracks().at(0).trackerSurfacePosition();
+            cpsc.setImpactPoint(math::XYZTLorentzVectorF(
+                vertex_pos.x(), vertex_pos.y(), vertex_pos.z(), 0.));
+        }
+        
+        cpsc.setPdgId(cp.pdgId());
         output->push_back(cpsc);
     }
 
