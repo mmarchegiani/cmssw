@@ -39,6 +39,7 @@ mergedSimClusterTable.variables.boundaryP4 = Var('impactMomentum.mag()', 'float'
 mergedSimClusterTable.variables.boundaryEnergy = Var('impactMomentum.energy()', 'float', precision=14, doc='magnitude of four vector')
 mergedSimClusterTable.variables.boundaryEnergyNoMu = Var('impactMomentumNoMu.energy()', 'float', precision=14, doc='magnitude of four vector')
 mergedSimClusterTable.variables.boundaryPt = Var('impactMomentum.pt()', 'float', precision=14, doc='magnitude of four vector')
+mergedSimClusterTable.variables.isPileup = Var('isPileup()', 'bool', doc='True if cluster originated from pileup particle(s)')
 
 mergedToUnmergedSCTable = cms.EDProducer("SimClusterToSimClustersIndexTableProducer",
     cut = mergedSimClusterTable.cut,

@@ -289,6 +289,12 @@ public:
  
   void setPdgId(int id) { pdgId_ = id; }
 
+  /** @brief Check if cluster is from pileup */
+  bool isPileup() const { return isPileup_; }
+  
+  /** @brief Set pileup flag */
+  void setIsPileup(bool isPU) { isPileup_ = isPU; }
+
   bool hasHGCALHit() const;
   bool allHitsHGCAL() const;
 
@@ -302,6 +308,7 @@ protected:
   
   //added
   int pdgId_{0};
+  bool isPileup_{false};
   //added
   uint32_t particleId_{0};
   float simhit_energy_{0.f};
