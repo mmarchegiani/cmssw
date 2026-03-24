@@ -15,20 +15,8 @@ SimCluster SimHistoryTool::createMergedSimCluster(std::vector<const SimCluster* 
 
     if(tomerge.size()<1)
         return out;
-    if(tomerge.size()==1){
-        out = *tomerge.at(0);
-        // For single clusters, check if any track is from pileup
-        const auto& sts = out.g4Tracks();
-        bool hasPileup = false;
-        for(const auto& st: sts){
-            if(st.eventId().bunchCrossing() != 0){
-                hasPileup = true;
-                break;
-            }
-        }
-        out.setIsPileup(hasPileup);
-        return out;
-    }
+    if(tomerge.size()==1)
+        return *tomerge.at(0);
 
     math::XYZTLorentzVectorF p4, point;
     double totalE=0;
@@ -38,22 +26,6 @@ SimCluster SimHistoryTool::createMergedSimCluster(std::vector<const SimCluster* 
     //////// more complex part assigning an ID
 
     out.setPdgId(createMergedSimClusterID(&out));
-
-    // Determine if this merged cluster is from pileup
-    // Energy-weighted determination: if more than 50% of energy comes from pileup tracks
-    const auto& sts = out.g4Tracks();
-    double pileupEnergy = 0.0;
-    totalE = 0.0;
-    for(const auto& st: sts){
-        double trackE = st.getMomentumAtBoundary().E();
-        totalE += trackE;
-        // Pileup particles have bunchCrossing != 0
-        if(st.eventId().bunchCrossing() != 0){
-            pileupEnergy += trackE;
-        }
-    }
-    // Mark as pileup if more than 50% of energy is from pileup
-    out.setIsPileup(totalE > 0 && pileupEnergy / totalE > 0.5);
 
     return out;
 
