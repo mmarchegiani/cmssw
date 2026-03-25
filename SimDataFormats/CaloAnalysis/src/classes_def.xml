@@ -18,7 +18,8 @@
   <class name="MtdCaloParticleRefProd"/>
   <class name="MtdCaloParticleContainer"/>
 
-  <class name="SimCluster"  ClassVersion="8">
+  <class name="SimCluster"  ClassVersion="9">
+   <version ClassVersion="9" checksum="1062942895"/>
    <version ClassVersion="8" checksum="1356980487"/>
    <version ClassVersion="7" checksum="3868743425"/>
    <version ClassVersion="6" checksum="1198608638"/>
@@ -35,7 +36,8 @@
 
   <class name="std::pair<edm::RefProd<std::vector<SimCluster> >, edm::RefProd<std::vector<CaloParticle> > >"/>
 
-  <class name="MtdSimCluster" ClassVersion="7">
+  <class name="MtdSimCluster" ClassVersion="8">
+   <version ClassVersion="8" checksum="1414305166"/>
     <version ClassVersion="7" checksum="926768342"/>
     <version ClassVersion="6" checksum="3803328692"/>
     <version ClassVersion="5" checksum="3108339619"/>

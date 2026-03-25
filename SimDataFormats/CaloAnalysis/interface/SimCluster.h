@@ -281,6 +281,12 @@ public:
   void setImpactMomentum(const math::XYZTLorentzVectorF &mom) { impactMomentum_ = mom; }
   const math::XYZTLorentzVectorF &impactMomentum() const { return impactMomentum_; }
 
+  /** @brief Fraction of cluster energy from pileup constituents (energy-weighted).
+   * 0 = fully hard-scatter, 1 = fully pileup. Only meaningful for merged clusters
+   * produced by SimClusterMerger or CPtoSimClusters. */
+  float pileupFraction() const { return pileupFraction_; }
+  void setPileupFraction(float f) { pileupFraction_ = f; }
+
   math::XYZTLorentzVectorF impactMomentumMuOnly() const;
   math::XYZTLorentzVectorF impactMomentumNoMu() const;
 
@@ -320,6 +326,7 @@ protected:
   math::XYZTLorentzVectorF impactMomentum_;
  
   std::vector<math::XYZTLorentzVectorF> subImpacts_;
+  float pileupFraction_{0.f};
   //added
 };
 

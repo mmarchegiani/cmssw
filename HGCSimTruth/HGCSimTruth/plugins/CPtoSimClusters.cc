@@ -74,6 +74,14 @@ void CPtoSimClusters::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 vertex_pos.x(), vertex_pos.y(), vertex_pos.z(), 0.));
         }
         
+        // Set pileup fraction: 0 for hard-scatter, 1 for pileup.
+        // Uses the same condition as removeCPFromPU in AssociatorTools.h.
+        if (!cp.g4Tracks().empty()) {
+            const auto& evId = cp.g4Tracks().at(0).eventId();
+            bool isPU = (evId.event() != 0 || evId.bunchCrossing() != 0);
+            cpsc.setPileupFraction(isPU ? 1.0f : 0.0f);
+        }
+        
         cpsc.setPdgId(cp.pdgId());
         output->push_back(cpsc);
     }

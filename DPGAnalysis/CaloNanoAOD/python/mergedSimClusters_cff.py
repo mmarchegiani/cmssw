@@ -39,6 +39,11 @@ mergedSimClusterTable.variables.boundaryP4 = Var('impactMomentum.mag()', 'float'
 mergedSimClusterTable.variables.boundaryEnergy = Var('impactMomentum.energy()', 'float', precision=14, doc='magnitude of four vector')
 mergedSimClusterTable.variables.boundaryEnergyNoMu = Var('impactMomentumNoMu.energy()', 'float', precision=14, doc='magnitude of four vector')
 mergedSimClusterTable.variables.boundaryPt = Var('impactMomentum.pt()', 'float', precision=14, doc='magnitude of four vector')
+# Override isPileup: for merged clusters the eventId() is unreliable (clusters from
+# different events are combined). Use the energy-weighted pileup fraction computed
+# in SimClusterMerger instead: isPileup = pileupFraction > 0.5.
+mergedSimClusterTable.variables.isPileup = Var('pileupFraction() > 0.5', 'bool', doc='Merged SimCluster is predominantly from pileup (energy-weighted fraction > 0.5)')
+mergedSimClusterTable.variables.pileupFraction = Var('pileupFraction()', 'float', precision=14, doc='Fraction of merged SimCluster energy from pileup constituents (0=hard-scatter, 1=pileup)')
 
 mergedToUnmergedSCTable = cms.EDProducer("SimClusterToSimClustersIndexTableProducer",
     cut = mergedSimClusterTable.cut,

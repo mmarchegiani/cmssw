@@ -156,8 +156,23 @@ void SimClusterMerger::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
     auto output = std::make_unique<SimClusterCollection>();
 
-    for(const auto& sc:mergedSC)
-        output->push_back(sc);//DEBUG can be moved to constructor once validated
+    for (size_t i = 0; i < mergedSC.size(); i++) {
+        // Compute energy-weighted pileup fraction directly from the g4Tracks of the
+        // merged SimCluster. operator+= copies every constituent g4Track into the merged
+        // cluster, so g4Tracks() here contains all original SimTracks. This avoids
+        // index-alignment issues (idxs are HGCAL-only indices, not scCollection indices)
+        // and the impactMomentum() == 0 problem for secondary/non-boundary-crossing tracks.
+        float totalE = 0.f, puE = 0.f;
+        for (const auto& track : mergedSC[i].g4Tracks()) {
+            float e = track.momentum().E();
+            totalE += e;
+            if (track.eventId().event() != 0 || track.eventId().bunchCrossing() != 0)
+                puE += e;
+        }
+        if (totalE > 0.f)
+            mergedSC[i].setPileupFraction(puE / totalE);
+        output->push_back(mergedSC[i]);
+    }
 
     const auto& mergedSCHandle = iEvent.put(std::move(output));
 
