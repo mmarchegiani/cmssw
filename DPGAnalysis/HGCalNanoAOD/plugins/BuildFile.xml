@@ -23,3 +23,13 @@
 <use name="TrackingTools/Records"/>
 <use name="TrackingTools/TrajectoryState"/>
 <use name="boost"/>
+<!-- extra dependencies of the cms-pepr plugins (*_pepr.cc) -->
+<use name="FWCore/ServiceRegistry"/>
+<use name="Geometry/HGCalGeometry"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="PhysicsTools/PatAlgos"/>
+<use name="SimDataFormats/Track"/>
+<use name="IOPool/Provenance"/>
+<use name="CondFormats/RunInfo"/>
+<use name="CondFormats/DataRecord"/>

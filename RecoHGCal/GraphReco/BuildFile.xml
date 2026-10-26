@@ -1,0 +1,21 @@
+<!-- Minimal, header-only port of cms-pepr's RecoHGCal/GraphReco for the TICLv6 area (26 Oct 2026):
+     only HGCalTrackPropagator.h, which DPGAnalysis/TrackNanoAOD's TrackPositionAtHGCALTableProducer
+     needs. The GNN window/inference code of the pepr package is not ported. The dependencies are
+     exported so that packages using this header link against the right libraries. -->
+<export>
+  <use name="DataFormats/TrackReco"/>
+  <use name="DataFormats/GeometrySurface"/>
+  <use name="DataFormats/GeometryVector"/>
+  <use name="DataFormats/HepMCCandidate"/>
+  <use name="DataFormats/Math"/>
+  <use name="FWCore/Framework"/>
+  <use name="Geometry/CaloGeometry"/>
+  <use name="Geometry/CommonTopologies"/>
+  <use name="Geometry/HGCalCommonData"/>
+  <use name="Geometry/Records"/>
+  <use name="MagneticField/Engine"/>
+  <use name="SimDataFormats/Track"/>
+  <use name="TrackingTools/GeomPropagators"/>
+  <use name="TrackingTools/Records"/>
+  <use name="TrackingTools/TrajectoryState"/>
+</export>
