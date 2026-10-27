@@ -142,6 +142,26 @@ truthBranchCandidateAssociators = cms.EDProducer(
     **_workingPointArgs,
 )
 
+# A layer cluster owns its HGCAL cells directly, so it is matched on shared energy like a
+# trackster, against the same candidate roots and with the same rechit weights, and
+# needs no layer-cluster collection to resolve. The barrel PFRecHits are left out: the
+# collection is endcap only, and every listed rechit collection is required.
+truthBranchLayerClusterAssociators = cms.EDProducer(
+    "TruthBranchLayerClusterAssociatorsProducer",
+    recoCollections=_tags("layerClusters"),
+    targetsSrc=cms.InputTag("truthBranchTargets", "selectedRoots"),
+    assignableTargetsSrc=cms.InputTag("truthBranchTargets", "assignableRoots"),
+    hgcalRecHits=cms.VInputTag(
+        cms.InputTag("HGCalRecHit", "HGCEERecHits"),
+        cms.InputTag("HGCalRecHit", "HGCHEFRecHits"),
+        cms.InputTag("HGCalRecHit", "HGCHEBRecHits"),
+    ),
+    pfRecHits=cms.VInputTag(),
+    denominatorDetectors=cms.vstring("HGCalEE", "HGCalHSi", "HGCalHSc"),
+    **_truthSources,
+    **_workingPointArgs,
+)
+
 # Hit-based on the CALORIMETER channel, barrel: a particle-flow cluster owns its cells
 # directly through hitsAndFractions, so it is matched on shared energy like a
 # trackster, with no layer-cluster collection to resolve. One module per subdetector:
@@ -191,6 +211,7 @@ truthGraphAssociatorsSequence = cms.Sequence(
     truthBranchTargets
     + allTrackToTruthBranchAssociators
     + truthBranchTracksterAssociators
+    + truthBranchLayerClusterAssociators
     + truthBranchCandidateAssociators
     + truthBranchPFClusterEcalAssociators
     + truthBranchPFClusterHcalAssociators
