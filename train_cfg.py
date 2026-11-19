@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
 from FWCore.ParameterSet.VarParsing import VarParsing
-import sys 
+import os
 
 process = cms.Process('NANO',Run3_2024)
 options = VarParsing('python')
@@ -20,6 +20,7 @@ options = VarParsing('python')
 
 
 options.register('collection', "candidate", VarParsing.multiplicity.singleton,VarParsing.varType.string,    "collection chosen")
+options.register('outputDir', "/eos/cms/store/group/phys_btag/mmarcheg/sv_reconstruction/training_datasets/TTto4Q_tracks_GenVertex", VarParsing.multiplicity.singleton, VarParsing.varType.string, "directory for the output file (used when outputFile is not given)")
 options.register('SVLoose',     0.,         VarParsing.multiplicity.singleton,  VarParsing.varType.float,   "Threshold for SV score to enter in IVF")
 options.register('SVSeed',      0.,         VarParsing.multiplicity.singleton,  VarParsing.varType.float,   "Threshold for SV score to be a seed for IVF")
 options.register('SVEdge',      0.,         VarParsing.multiplicity.singleton,  VarParsing.varType.float,   "Threshold for edgeScore_ij of track j to be included in seed of track i")
@@ -29,6 +30,7 @@ options.register('minS1',       2.,         VarParsing.multiplicity.singleton,  
 options.register('f2',          0.2,         VarParsing.multiplicity.singleton,  VarParsing.varType.float,   "f2")
 options.register('minS2',       10.,         VarParsing.multiplicity.singleton,  VarParsing.varType.float,   "minS2")
 
+options.setDefault('maxEvents', 5000)   # override with maxEvents=N (-1 = all events)
 options.parseArguments()
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -44,8 +46,8 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(5000),
-    output = cms.untracked.int32(5000)
+    input = cms.untracked.int32(options.maxEvents),
+    output = cms.untracked.int32(options.maxEvents)
 )
 process.Timing = cms.Service("Timing",
     summaryOnly = cms.untracked.bool(True),
@@ -68,6 +70,10 @@ process.source = cms.Source("PoolSource",
      ) ),
     secondaryFileNames = cms.untracked.vstring()
 )
+
+# inputFiles=... on the command line replaces the default file above
+if options.inputFiles:
+    process.source.fileNames = cms.untracked.vstring(options.inputFiles)
 
 process.options = cms.untracked.PSet(
     IgnoreCompletely = cms.untracked.vstring(),
@@ -111,12 +117,11 @@ process.configurationMetadata = cms.untracked.PSet(
 # Output definition
 
 if options.outputFile=="output.root":
-    if options.collection=="":
-        processName = "outputBTV.root" 
-    else:
-        #processName = options.collection+".root"
-        processName = "TTtoLNu2Q_BTV_0p4_dE_dzCut1p5.root"
+    # default: <outputDir>/TTto4Q_<collection>.root
+    os.makedirs(options.outputDir, exist_ok=True)
+    processName = os.path.join(options.outputDir, "TTto4Q_%s.root" % (options.collection or "BTV"))
 else:
+    # explicit outputFile=... on the command line is used as given
     processName = options.outputFile
 process.NANOEDMAODSIM1output = cms.OutputModule("NanoAODOutputModule",
     compressionAlgorithm = cms.untracked.string('LZMA'),
@@ -191,7 +196,6 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '150X_mcRun3_2024_realistic_v2'
 
 
 
-sys.path.append("/work/gcelotto/btv_new/CMSSW_15_0_6/src/PhysicsTools/SimpleVertexTable/python")
 process.load("RecoVertex.AdaptiveVertexFinder.inclusiveVertexing_cff")
 
 
@@ -200,16 +204,16 @@ process.load("RecoVertex.AdaptiveVertexFinder.inclusiveVertexing_cff")
 #. 
 #.    MERGED GEN PARTICLES
 #. 
-from mergedGenParticles import customMergedGenParticles, customFinalGenParticles, customGenParticleTable
+from PhysicsTools.SimpleVertexTable.mergedGenParticles import customMergedGenParticles, customFinalGenParticles, customGenParticleTable
 process.customMergedGenParticles = customMergedGenParticles 
 process.customFinalGenParticles = customFinalGenParticles 
 process.customGenParticleTable = customGenParticleTable 
 
 
 
-from genVertices import custom_GV_producer
-from sv_candidate_cff import custom_sv_candidate #inclusiveCandidateVertexFinder, candidateVertexMerger, CandidateVertexArbitrator, myCandidateInclusiveSecondaryVertices, myvertexTable, svCandidateTable, slimmedSecondaryVertices
-from sv_reco_cff import custom_sv_tracks, custom_sv_tracks_training, custom_train_features
+from PhysicsTools.SimpleVertexTable.genVertices import custom_GV_producer
+from PhysicsTools.SimpleVertexTable.sv_candidate_cff import custom_sv_candidate #inclusiveCandidateVertexFinder, candidateVertexMerger, CandidateVertexArbitrator, myCandidateInclusiveSecondaryVertices, myvertexTable, svCandidateTable, slimmedSecondaryVertices
+from PhysicsTools.SimpleVertexTable.sv_reco_cff import custom_sv_tracks, custom_sv_tracks_training, custom_train_features
 
 
 
@@ -232,14 +236,15 @@ if options.collection=="candidate":
 
 elif options.collection=="track":
     process = custom_sv_tracks_training(process)
-    process = custom_train_features(process, gvProducerLabel="gvProducer")  # NEW
+    # GVProducer is registered as process.genVertexTable by custom_GV_producer (see genVertices.py)
+    process = custom_train_features(process, gvProducerLabel="genVertexTable")
 
     process.nanoAOD_step = cms.Path(
                                 process.customMergedGenParticles*
                                 process.customFinalGenParticles*
                                 process.customGenParticleTable+
                                 process.sv_track*
-                                process.genVertexProducer_sequence*
+                                process.genVertexTable*
                                 process.trackGVFeatures 
                                 )
     
